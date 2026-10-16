@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're Invited! RSVP</title>
+
+  <!-- Open Graph tags control the title used in text & social link previews -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="You're Invited! RSVP" />
+  <meta property="og:description" content="Event details and RSVP inside." />
+  <meta property="og:url" content="https://slycann.github.io/cann-girls-seven-and-four-party/" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #f4f7fb;
+      color: #23303f;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: #2f6fb3;
+      padding: 48px 20px 40px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      color: #fff;
+      line-height: 1.15;
+    }
+
+    .hero .subtitle {
+      margin-top: 10px;
+      font-size: clamp(1rem, 3.5vw, 1.25rem);
+      color: #ffd166;
+    }
+
+    /* ── Content ── */
+    .container {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      color: #2f6fb3;
+      margin-bottom: 14px;
+      border-bottom: 2px solid #ffd166;
+      padding-bottom: 6px;
+    }
+
+    /* ── Details ── */
+    .detail-line {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .detail-line:last-child { margin-bottom: 0; }
+    .detail-line .label { font-weight: 700; color: #2f6fb3; }
+
+    /* ── Form ── */
+    .field { margin-bottom: 16px; }
+
+    .field label,
+    .field legend {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .field input[type="text"],
+    .field input[type="tel"],
+    .field input[type="email"] {
+      width: 100%;
+      border: 2px solid #d6dfea;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    .field input:focus { border-color: #2f6fb3; }
+
+    fieldset.field { border: none; }
+
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .choice input { position: absolute; opacity: 0; pointer-events: none; }
+
+    .choice span {
+      display: block;
+      text-align: center;
+      border: 2px solid #d6dfea;
+      border-radius: 12px;
+      padding: 14px 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .choice input:checked + span { border-color: #2f6fb3; background: #e8f0fa; font-weight: 700; }
+    .choice input:focus-visible + span { outline: 3px solid #ffd166; outline-offset: 2px; }
+
+    .btn-submit {
+      width: 100%;
+      background: #2f6fb3;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover { background: #24578e; }
+    .btn-submit:disabled { background: #b8c4d2; cursor: default; }
+
+    .form-message {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      min-height: 20px;
+      text-align: center;
+    }
+
+    .form-message.error { color: #d63b3b; }
+
+    /* ── Thank-you ── */
+    .thanks { display: none; text-align: center; }
+    .thanks.show { display: block; }
+    .thanks h2 { font-size: 1.5rem; color: #2f6fb3; margin-bottom: 8px; }
+    .thanks p { font-size: 1.05rem; line-height: 1.6; color: #4a5768; }
+
+    footer {
+      text-align: center;
+      padding: 0 16px 24px;
+      font-size: 0.85rem;
+      color: #9aa7b6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>🎉 You're Invited!</h1>
+    <div class="subtitle">Event name coming soon</div>
+  </div>
+
+  <div class="container">
+
+    <!-- Details (fill in later) -->
+    <div class="card">
+      <h2 class="section-title">Details</h2>
+      <div class="detail-line"><span class="label">Date:</span> TBD</div>
+      <div class="detail-line"><span class="label">Time:</span> TBD</div>
+      <div class="detail-line"><span class="label">Where:</span> TBD</div>
+    </div>
+
+    <!-- RSVP form -->
+    <div class="card">
+      <form id="rsvpForm" novalidate>
+        <h2 class="section-title">RSVP</h2>
+
+        <div class="field">
+          <label for="parentName">Parent's Name</label>
+          <input type="text" id="parentName" name="parent_name" autocomplete="name" maxlength="80" required />
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel" maxlength="30" required />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" autocomplete="email" maxlength="120" required />
+        </div>
+
+        <div class="field">
+          <label for="childName">Child's Name</label>
+          <input type="text" id="childName" name="child_name" maxlength="80" required />
+        </div>
+
+        <fieldset class="field">
+          <legend>Will you be attending?</legend>
+          <div class="choices">
+            <label class="choice">
+              <input type="radio" name="attending" value="Yes" required />
+              <span>✅ Yes, we'll be there!</span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="attending" value="No" />
+              <span>❌ Sorry, can't make it</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-submit" id="submitBtn">Send RSVP</button>
+        <div class="form-message" id="formMessage"></div>
+      </form>
+
+      <div class="thanks" id="thanks">
+        <h2 id="thanksTitle"></h2>
+        <p id="thanksText"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Questions? Reach out to the host.</footer>
+
+  <script>
+    // ── Formspree endpoint (formspree.io → your form → Integration) ──
+    const FORMSPREE_URL = 'https://formspree.io/f/xrpzdjvn';
+    // ── Subscribe to this topic in the ntfy app to get a push on every RSVP ──
+    const NTFY_TOPIC = 'cann-girls-party';
+
+    const form = document.getElementById('rsvpForm');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        parent_name: form.parent_name.value.trim(),
+        phone: form.phone.value.trim(),
+        email: form.email.value.trim(),
+        child_name: form.child_name.value.trim(),
+        attending: form.attending.value
+      };
+
+      if (!data.parent_name || !data.phone || !data.email || !data.child_name) {
+        showMessage('Please fill in every field.'); return;
+      }
+      if (!form.email.checkValidity()) { showMessage('Please enter a valid email.'); return; }
+      if (!data.attending) { showMessage('Please let us know if you can come.'); return; }
+
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      showMessage('');
+
+      try {
+        const res = await fetch(FORMSPREE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ ...data, _subject: `RSVP (${data.attending}): ${data.parent_name}` })
+        });
+
+        if (!res.ok) throw new Error('Formspree error');
+
+        // Push alert is a bonus — don't fail the RSVP if it doesn't go through.
+        // Phone and email stay out of it since ntfy topics are public.
+        try {
+          await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
+            method: 'POST',
+            body: `${data.parent_name} (${data.child_name}): ${data.attending === 'Yes' ? 'Coming' : 'Not coming'}`,
+            headers: { 'Title': 'New RSVP!', 'Priority': 'default' }
+          });
+        } catch (_) {}
+
+        form.style.display = 'none';
+        document.getElementById('thanksTitle').textContent =
+          data.attending === 'Yes' ? 'See you there! 🎉' : 'Thanks for letting us know!';
+        document.getElementById('thanksText').textContent =
+          data.attending === 'Yes'
+            ? `We've got ${data.child_name} on the list.`
+            : `Sorry ${data.child_name} can't make it. We'll miss you!`;
+        document.getElementById('thanks').classList.add('show');
+      } catch (err) {
+        showMessage('Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Send RSVP';
+      }
+    });
+
+    function showMessage(msg) {
+      const el = document.getElementById('formMessage');
+      el.textContent = msg;
+      el.className = msg ? 'form-message error' : 'form-message';
+    }
+  </script>
+
+</body>
+</html>
