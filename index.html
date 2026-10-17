@@ -3,84 +3,163 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You're Invited! RSVP</title>
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#dbe9f6" />
+  <title>Cann Girls Art Birthday - RSVP</title>
 
-  <!-- Open Graph tags control the title used in text & social link previews -->
+  <!-- Open Graph tags control the image/title used in text & social link previews -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="You're Invited! RSVP" />
-  <meta property="og:description" content="Event details and RSVP inside." />
+  <meta property="og:title" content="Cann Girls Art Birthday" />
+  <meta property="og:description" content="Join Vivian and Violet on Sunday, November 22, 1pm - 3pm at Creekfront in Lake Forest Park. Please RSVP by 11/15." />
+  <meta property="og:image" content="https://slycann.github.io/cann-girls-seven-and-four-party/images/invite-title.jpg" />
   <meta property="og:url" content="https://slycann.github.io/cann-girls-seven-and-four-party/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://slycann.github.io/cann-girls-seven-and-four-party/images/invite-title.jpg" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mali:wght@500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* Colors pulled from the printed invite */
+    :root {
+      --navy: #1d2b4f;
+      --coral: #c0492f;
+      --coral-dark: #9e3a24;
+      --blue: #2e6f9e;
+      --green: #3f9d4b;
+      --card: #fffdf8;
+      --line: #dfe3ea;
+      --rainbow: linear-gradient(90deg, #e2493b, #f29a2e, #f4c430, #3f9d4b, #2f78c4, #8a4fb5, #d8437f);
+    }
+
     body {
-      font-family: 'Georgia', serif;
-      background: #f4f7fb;
-      color: #23303f;
+      font-family: 'Mali', 'Trebuchet MS', sans-serif;
+      font-weight: 500;
+      /* painted sky → misty cream → evergreen haze, like the invite */
+      background: linear-gradient(180deg, #d6e6f5 0%, #eef0f0 35%, #f6f1e6 65%, #e2eadb 100%);
+      background-color: #eef0f0;
+      color: var(--navy);
       min-height: 100vh;
+      font-size: 1.05rem;
     }
 
-    /* ── Hero ── */
-    .hero {
-      background: #2f6fb3;
-      padding: 48px 20px 40px;
-      text-align: center;
+    .visually-hidden {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
     }
 
-    .hero h1 {
-      font-size: clamp(2rem, 7vw, 3.2rem);
-      color: #fff;
-      line-height: 1.15;
+    /* ── Invite artwork ── */
+    .invite-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 20px 16px 0;
     }
 
-    .hero .subtitle {
-      margin-top: 10px;
-      font-size: clamp(1rem, 3.5vw, 1.25rem);
-      color: #ffd166;
+    .invite-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(29, 43, 79, 0.18);
     }
 
     /* ── Content ── */
     .container {
       max-width: 560px;
       margin: 0 auto;
-      padding: 28px 16px 64px;
+      padding: 20px 16px 8px;
     }
 
     .card {
-      background: #fff;
-      border-radius: 16px;
+      background: var(--card);
+      border-radius: 18px;
       padding: 24px 20px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      box-shadow: 0 4px 18px rgba(29, 43, 79, 0.09);
       margin-bottom: 20px;
     }
 
-    .section-title {
-      font-size: 1.3rem;
-      color: #2f6fb3;
-      margin-bottom: 14px;
-      border-bottom: 2px solid #ffd166;
-      padding-bottom: 6px;
+    .intro {
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 1.55;
     }
 
-    /* ── Details ── */
-    .detail-line {
-      font-size: 1.05rem;
-      line-height: 1.6;
+    .script-title {
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: 2.1rem;
+      color: var(--coral);
+      text-align: center;
+      line-height: 1.1;
       margin-bottom: 6px;
     }
 
-    .detail-line:last-child { margin-bottom: 0; }
-    .detail-line .label { font-weight: 700; color: #2f6fb3; }
+    .brush {
+      height: 6px;
+      width: 120px;
+      margin: 0 auto 20px;
+      border-radius: 999px;
+      background: var(--rainbow);
+    }
+
+    /* ── Details ── */
+    .detail {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .detail:last-child { border-bottom: none; padding-bottom: 0; }
+    .brush + .detail { padding-top: 0; }
+
+    .detail .icon { font-size: 1.6rem; line-height: 1.2; flex-shrink: 0; }
+
+    .detail .label {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 2px;
+    }
+
+    .detail .value { font-size: 1.08rem; line-height: 1.45; }
+    .detail a { color: var(--coral); text-decoration: underline; text-underline-offset: 3px; }
+
+    .rsvp-by {
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--coral);
+      margin: 4px 0 22px;
+      line-height: 1.2;
+    }
 
     /* ── Form ── */
+    .form-card { position: relative; overflow: hidden; padding-top: 30px; }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: var(--rainbow);
+    }
+
     .field { margin-bottom: 16px; }
 
     .field label,
     .field legend {
       display: block;
-      font-size: 0.95rem;
       font-weight: 700;
+      font-size: 1rem;
       margin-bottom: 6px;
     }
 
@@ -88,17 +167,18 @@
     .field input[type="tel"],
     .field input[type="email"] {
       width: 100%;
-      border: 2px solid #d6dfea;
-      border-radius: 10px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
       padding: 12px 14px;
       font-size: 1rem;
       font-family: inherit;
+      color: var(--navy);
+      background: #fff;
       outline: none;
       transition: border-color 0.2s;
-      background: #fff;
     }
 
-    .field input:focus { border-color: #2f6fb3; }
+    .field input:focus { border-color: var(--blue); }
 
     fieldset.field { border: none; }
 
@@ -112,81 +192,127 @@
 
     .choice span {
       display: block;
+      height: 100%;
       text-align: center;
-      border: 2px solid #d6dfea;
-      border-radius: 12px;
+      border: 2px solid var(--line);
+      border-radius: 14px;
       padding: 14px 8px;
       font-size: 1rem;
+      font-weight: 600;
+      background: #fff;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .choice input:checked + span { border-color: #2f6fb3; background: #e8f0fa; font-weight: 700; }
-    .choice input:focus-visible + span { outline: 3px solid #ffd166; outline-offset: 2px; }
+    .choice input[value="Yes"]:checked + span { border-color: var(--green); background: #eaf6ec; }
+    .choice input[value="No"]:checked + span  { border-color: var(--coral); background: #fbece8; }
+    .choice input:focus-visible + span { outline: 3px solid #f4c430; outline-offset: 2px; }
 
     .btn-submit {
       width: 100%;
-      background: #2f6fb3;
+      background: var(--coral);
       color: #fff;
       border: none;
       border-radius: 999px;
       padding: 16px;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-family: inherit;
       font-weight: 700;
       cursor: pointer;
       margin-top: 4px;
+      box-shadow: 0 4px 14px rgba(192, 73, 47, 0.3);
       transition: background 0.2s;
     }
 
-    .btn-submit:hover { background: #24578e; }
-    .btn-submit:disabled { background: #b8c4d2; cursor: default; }
+    .btn-submit:hover { background: var(--coral-dark); }
+    .btn-submit:disabled { background: #c9c3bd; box-shadow: none; cursor: default; }
 
     .form-message {
       margin-top: 12px;
       font-size: 0.95rem;
       min-height: 20px;
       text-align: center;
+      color: #c0392b;
     }
 
-    .form-message.error { color: #d63b3b; }
-
     /* ── Thank-you ── */
-    .thanks { display: none; text-align: center; }
+    .thanks { display: none; text-align: center; padding: 8px 0; }
     .thanks.show { display: block; }
-    .thanks h2 { font-size: 1.5rem; color: #2f6fb3; margin-bottom: 8px; }
-    .thanks p { font-size: 1.05rem; line-height: 1.6; color: #4a5768; }
+    .thanks .script-title { font-size: 2.3rem; }
+    .thanks p { font-size: 1.1rem; line-height: 1.6; }
 
-    footer {
-      text-align: center;
-      padding: 0 16px 24px;
-      font-size: 0.85rem;
-      color: #9aa7b6;
+    /* ── Footer ── */
+    footer { text-align: center; margin-top: 12px; }
+
+    footer .script-title { font-size: 2rem; color: var(--blue); }
+
+    footer img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 960px;
+      margin: 0 auto;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
+      mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
     }
   </style>
 </head>
 <body>
 
-  <!-- Hero -->
-  <div class="hero">
-    <h1>🎉 You're Invited!</h1>
-    <div class="subtitle">Event name coming soon</div>
+  <h1 class="visually-hidden">Cann Girls Art Birthday</h1>
+
+  <!-- Title artwork from the front of the invite -->
+  <div class="invite-wrap">
+    <img src="images/invite-title.jpg" width="1100" height="721"
+         alt="Cann Girls Art Birthday. You're invited to celebrate! Sunday, November 22, 1pm to 3pm." />
   </div>
 
   <div class="container">
 
-    <!-- Details (fill in later) -->
+    <!-- Intro + details (from the back of the invite) -->
     <div class="card">
-      <h2 class="section-title">Details</h2>
-      <div class="detail-line"><span class="label">Date:</span> TBD</div>
-      <div class="detail-line"><span class="label">Time:</span> TBD</div>
-      <div class="detail-line"><span class="label">Where:</span> TBD</div>
+      <p class="intro">Join Vivian and Violet for a colorful, art-filled afternoon of creativity, painting, and birthday fun!</p>
     </div>
 
-    <!-- RSVP form -->
     <div class="card">
+      <h2 class="script-title">Party Details</h2>
+      <div class="brush"></div>
+
+      <div class="detail">
+        <div class="icon" aria-hidden="true">🗓️</div>
+        <div>
+          <div class="label">When</div>
+          <div class="value">Sunday, November 22<br/>1pm – 3pm</div>
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="icon" aria-hidden="true">📍</div>
+        <div>
+          <div class="label">Where</div>
+          <div class="value">
+            Creekfront<br/>
+            <a href="https://maps.google.com/?q=2830+NE+187th+St,+Lake+Forest+Park,+WA" target="_blank" rel="noopener">2830 NE 187th St<br/>Lake Forest Park</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail">
+        <div class="icon" aria-hidden="true">🧁</div>
+        <div>
+          <div class="label">Food</div>
+          <div class="value">Food and drinks will be available for everyone.</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="rsvp-by">Please RSVP by Sunday, 11/15</p>
+
+    <!-- RSVP form -->
+    <div class="card form-card">
       <form id="rsvpForm" novalidate>
-        <h2 class="section-title">RSVP</h2>
+        <h2 class="script-title">RSVP</h2>
+        <div class="brush"></div>
 
         <div class="field">
           <label for="parentName">Parent's Name</label>
@@ -213,28 +339,31 @@
           <div class="choices">
             <label class="choice">
               <input type="radio" name="attending" value="Yes" required />
-              <span>✅ Yes, we'll be there!</span>
+              <span>🎨 Yes, we'll be there!</span>
             </label>
             <label class="choice">
               <input type="radio" name="attending" value="No" />
-              <span>❌ Sorry, can't make it</span>
+              <span>Sorry, can't make it</span>
             </label>
           </div>
         </fieldset>
 
         <button type="submit" class="btn-submit" id="submitBtn">Send RSVP</button>
-        <div class="form-message" id="formMessage"></div>
+        <div class="form-message" id="formMessage" role="alert"></div>
       </form>
 
       <div class="thanks" id="thanks">
-        <h2 id="thanksTitle"></h2>
+        <h2 class="script-title" id="thanksTitle"></h2>
         <p id="thanksText"></p>
       </div>
     </div>
 
   </div>
 
-  <footer>Questions? Reach out to the host.</footer>
+  <footer>
+    <p class="script-title">See you there!</p>
+    <img src="images/lake.jpg" width="960" height="180" alt="" />
+  </footer>
 
   <script>
     // ── Formspree endpoint (formspree.io → your form → Integration) ──
@@ -270,7 +399,7 @@
         const res = await fetch(FORMSPREE_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ ...data, _subject: `RSVP (${data.attending}): ${data.parent_name}` })
+          body: JSON.stringify({ ...data, _subject: `Art Birthday RSVP (${data.attending}): ${data.parent_name}` })
         });
 
         if (!res.ok) throw new Error('Formspree error');
@@ -281,17 +410,17 @@
           await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
             method: 'POST',
             body: `${data.parent_name} (${data.child_name}): ${data.attending === 'Yes' ? 'Coming' : 'Not coming'}`,
-            headers: { 'Title': 'New RSVP!', 'Priority': 'default' }
+            headers: { 'Title': 'Art Birthday RSVP', 'Priority': 'default' }
           });
         } catch (_) {}
 
         form.style.display = 'none';
         document.getElementById('thanksTitle').textContent =
-          data.attending === 'Yes' ? 'See you there! 🎉' : 'Thanks for letting us know!';
+          data.attending === 'Yes' ? "Yay, you're on the list!" : 'Thanks for letting us know!';
         document.getElementById('thanksText').textContent =
           data.attending === 'Yes'
-            ? `We've got ${data.child_name} on the list.`
-            : `Sorry ${data.child_name} can't make it. We'll miss you!`;
+            ? `We can't wait to see ${data.child_name} on Sunday, November 22 at 1pm.`
+            : `We'll miss ${data.child_name}. Thanks for the RSVP!`;
         document.getElementById('thanks').classList.add('show');
       } catch (err) {
         showMessage('Something went wrong. Please try again.');
@@ -301,9 +430,7 @@
     });
 
     function showMessage(msg) {
-      const el = document.getElementById('formMessage');
-      el.textContent = msg;
-      el.className = msg ? 'form-message error' : 'form-message';
+      document.getElementById('formMessage').textContent = msg;
     }
   </script>
 
