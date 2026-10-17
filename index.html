@@ -163,9 +163,17 @@
       margin-bottom: 6px;
     }
 
+    .field .optional { font-weight: 500; font-size: 0.9rem; color: #5b6680; }
+
+    .hint {
+      font-size: 0.9rem;
+      line-height: 1.4;
+      color: #5b6680;
+      margin-bottom: 8px;
+    }
+
     .field input[type="text"],
-    .field input[type="tel"],
-    .field input[type="email"] {
+    .field input[type="tel"] {
       width: 100%;
       border: 2px solid var(--line);
       border-radius: 12px;
@@ -181,6 +189,59 @@
     .field input:focus { border-color: var(--blue); }
 
     fieldset.field { border: none; }
+
+    /* ── Mailing address: street on top, city / state / zip below ── */
+    .addr-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.3fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    /* ── Children: one name + age row per kid ── */
+    .kid-labels,
+    .kid-row {
+      display: grid;
+      grid-template-columns: 1fr 72px 40px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .kid-labels { font-weight: 700; margin-bottom: 6px; }
+    .kid-row { margin-bottom: 8px; }
+    .field .kid-row input[name="kid_age"] { text-align: center; padding-left: 6px; padding-right: 6px; }
+
+    .btn-remove {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: #fff;
+      color: #5b6680;
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .btn-remove:hover { border-color: var(--coral); color: var(--coral); }
+
+    .btn-add {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      border: 2px dashed #b9c6d8;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--blue);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-add:hover { border-color: var(--blue); background: #eef4fa; }
+    .kids-hint { margin: 4px 0 8px; }
 
     .choices {
       display: grid;
@@ -325,14 +386,29 @@
         </div>
 
         <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" autocomplete="email" maxlength="120" required />
+          <label for="street">Mailing Address <span class="optional">(optional)</span></label>
+          <p class="hint">We love sending invites by mail!</p>
+          <input type="text" id="street" name="street" autocomplete="address-line1" placeholder="Street address" maxlength="120" />
+          <div class="addr-row">
+            <input type="text" name="city" autocomplete="address-level2" placeholder="City" aria-label="City" maxlength="60" />
+            <input type="text" name="state" autocomplete="address-level1" placeholder="State" aria-label="State" maxlength="20" />
+            <input type="text" name="zip" autocomplete="postal-code" inputmode="numeric" placeholder="ZIP" aria-label="ZIP code" maxlength="10" />
+          </div>
         </div>
 
-        <div class="field">
-          <label for="childName">Child's Name</label>
-          <input type="text" id="childName" name="child_name" maxlength="80" required />
-        </div>
+        <fieldset class="field">
+          <legend class="visually-hidden">Children</legend>
+          <div class="kid-labels" aria-hidden="true"><span>Child's Name</span><span>Age</span><span></span></div>
+          <div id="kids">
+            <div class="kid-row">
+              <input type="text" name="kid_name" maxlength="80" aria-label="Child's name" required />
+              <input type="text" name="kid_age" inputmode="numeric" maxlength="3" aria-label="Child's age" required />
+              <span></span>
+            </div>
+          </div>
+          <p class="hint kids-hint">Bringing more than one child? Tap below to add each one.</p>
+          <button type="button" class="btn-add" id="addKid">+ Add another child</button>
+        </fieldset>
 
         <fieldset class="field">
           <legend>Will you be attending?</legend>
@@ -372,23 +448,73 @@
     const NTFY_TOPIC = 'cann-girls-party';
 
     const form = document.getElementById('rsvpForm');
+    const kidsEl = document.getElementById('kids');
+
+    // ── "+ Add another child" adds a name/age row; each added row can be removed ──
+    document.getElementById('addKid').addEventListener('click', () => {
+      const row = document.createElement('div');
+      row.className = 'kid-row';
+      row.innerHTML =
+        '<input type="text" name="kid_name" maxlength="80" />' +
+        '<input type="text" name="kid_age" inputmode="numeric" maxlength="3" />' +
+        '<button type="button" class="btn-remove">×</button>';
+      row.querySelector('.btn-remove').addEventListener('click', () => {
+        row.remove();
+        renumberKids();
+      });
+      kidsEl.appendChild(row);
+      renumberKids();
+      row.querySelector('input').focus();
+    });
+
+    function renumberKids() {
+      kidsEl.querySelectorAll('.kid-row').forEach((row, i) => {
+        if (i === 0) return;
+        const n = i + 1;
+        const [name, age] = row.querySelectorAll('input');
+        name.placeholder = `Child ${n}`;
+        name.setAttribute('aria-label', `Child ${n}'s name`);
+        age.setAttribute('aria-label', `Child ${n}'s age`);
+        row.querySelector('.btn-remove').setAttribute('aria-label', `Remove child ${n}`);
+      });
+    }
+
+    function listNames(names) {
+      try { return new Intl.ListFormat('en', { type: 'conjunction' }).format(names); }
+      catch (_) { return names.join(', '); }
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
+      const field = (name) => form.elements[name].value.trim();
+
+      // Added rows left completely blank are ignored
+      const kids = [...kidsEl.querySelectorAll('.kid-row')]
+        .map(row => {
+          const [name, age] = row.querySelectorAll('input');
+          return { name: name.value.trim(), age: age.value.trim() };
+        })
+        .filter((kid, i) => i === 0 || kid.name || kid.age);
+
+      const address = [field('street'), field('city'), [field('state'), field('zip')].filter(Boolean).join(' ')]
+        .filter(Boolean).join(', ');
+
       const data = {
-        parent_name: form.parent_name.value.trim(),
-        phone: form.phone.value.trim(),
-        email: form.email.value.trim(),
-        child_name: form.child_name.value.trim(),
-        attending: form.attending.value
+        parent_name: field('parent_name'),
+        phone: field('phone'),
+        mailing_address: address || '(not given)',
+        children: kids.map(kid => `${kid.name} (${kid.age})`).join(', '),
+        number_of_children: kids.length,
+        attending: form.elements.attending.value
       };
 
-      if (!data.parent_name || !data.phone || !data.email || !data.child_name) {
-        showMessage('Please fill in every field.'); return;
-      }
-      if (!form.email.checkValidity()) { showMessage('Please enter a valid email.'); return; }
+      if (!data.parent_name || !data.phone) { showMessage('Please fill in your name and phone.'); return; }
+      if (kids.some(kid => !kid.name || !kid.age)) { showMessage('Please add a name and age for each child.'); return; }
       if (!data.attending) { showMessage('Please let us know if you can come.'); return; }
+
+      const kidNames = listNames(kids.map(kid => kid.name));
+      const kidCount = `${kids.length} ${kids.length === 1 ? 'kid' : 'kids'}`;
 
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
@@ -399,17 +525,17 @@
         const res = await fetch(FORMSPREE_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ ...data, _subject: `Art Birthday RSVP (${data.attending}): ${data.parent_name}` })
+          body: JSON.stringify({ ...data, _subject: `Art Birthday RSVP (${data.attending}, ${kidCount}): ${data.parent_name}` })
         });
 
         if (!res.ok) throw new Error('Formspree error');
 
         // Push alert is a bonus — don't fail the RSVP if it doesn't go through.
-        // Phone and email stay out of it since ntfy topics are public.
+        // Phone and address stay out of it since ntfy topics are public.
         try {
           await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
             method: 'POST',
-            body: `${data.parent_name} (${data.child_name}): ${data.attending === 'Yes' ? 'Coming' : 'Not coming'}`,
+            body: `${data.parent_name} (${kidNames}): ${data.attending === 'Yes' ? `Coming, ${kidCount}` : 'Not coming'}`,
             headers: { 'Title': 'Art Birthday RSVP', 'Priority': 'default' }
           });
         } catch (_) {}
@@ -419,8 +545,8 @@
           data.attending === 'Yes' ? "Yay, you're on the list!" : 'Thanks for letting us know!';
         document.getElementById('thanksText').textContent =
           data.attending === 'Yes'
-            ? `We can't wait to see ${data.child_name} on Sunday, November 22 at 1pm.`
-            : `We'll miss ${data.child_name}. Thanks for the RSVP!`;
+            ? `We can't wait to see ${kidNames} on Sunday, November 22 at 1pm.`
+            : `We'll miss ${kidNames}. Thanks for the RSVP!`;
         document.getElementById('thanks').classList.add('show');
       } catch (err) {
         showMessage('Something went wrong. Please try again.');
