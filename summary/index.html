@@ -108,6 +108,11 @@
       <h2>All RSVPs</h2>
       <div class="scroll" id="list"></div>
     </section>
+
+    <section class="card" id="notesCard" hidden>
+      <h2>Notes</h2>
+      <div class="scroll" id="notes"></div>
+    </section>
   </main>
 
   <script>
@@ -214,6 +219,15 @@
         ])));
       } else {
         setMessage($('list'), 'No RSVPs yet.');
+      }
+
+      // Notes pulled out of the name fields (e.g. "game time decision on which parent")
+      const withNotes = rsvps.filter(r => r.notes);
+      $('notesCard').hidden = !withNotes.length;
+      if (withNotes.length) {
+        $('notes').replaceChildren(table([['Parent'], ['Note']], withNotes.map(r => [
+          { text: r.parent }, { text: r.notes }
+        ])));
       }
     }
 
