@@ -1,4 +1,10 @@
 /**
+ * @OnlyCurrentDoc
+ * Limits the script to the Sheet it's attached to, instead of every Sheet in
+ * the account, so Google treats it as a lower-risk permission when authorizing.
+ */
+
+/**
  * RSVP collector + sanitized feed for the party summary page.
  *
  * Setup: create a Google Sheet, then Extensions > Apps Script, paste this file,
