@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Art Birthday RSVP Summary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1d2b4f;
+      --coral: #c0492f;
+      --blue: #2e6f9e;
+      --green: #3f9d4b;
+      --muted: #5b6680;
+      --card: #fffdf8;
+      --line: #dfe3ea;
+      --rainbow: linear-gradient(90deg, #e2493b, #f29a2e, #f4c430, #3f9d4b, #2f78c4, #8a4fb5, #d8437f);
+    }
+
+    body {
+      font-family: 'Mali', 'Trebuchet MS', sans-serif;
+      font-weight: 500;
+      background: linear-gradient(180deg, #d6e6f5 0%, #eef0f0 35%, #f6f1e6 65%, #e2eadb 100%);
+      background-color: #eef0f0;
+      color: var(--navy);
+      min-height: 100vh;
+      font-size: 1rem;
+      padding: 24px 16px 48px;
+    }
+
+    main { max-width: 720px; margin: 0 auto; }
+
+    h1 { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
+    .sub { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 4px 0 20px; }
+
+    .card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(29, 43, 79, 0.08);
+      overflow: hidden;
+    }
+    .card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--rainbow); }
+
+    h2 { font-family: 'Montserrat', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+
+    .headline { text-align: center; }
+    .headline .big { font-family: 'Montserrat', sans-serif; font-size: 5.5rem; line-height: 1; color: var(--coral); }
+    .headline .label { font-weight: 700; margin-top: 4px; }
+    .tiles { display: flex; gap: 12px; margin-top: 18px; }
+    .tile { flex: 1; background: #f3f6fb; border-radius: 12px; padding: 12px 8px; text-align: center; }
+    .tile .n { font-family: 'Montserrat', sans-serif; font-size: 1.8rem; color: var(--blue); }
+    .tile .t { font-size: 0.85rem; color: var(--muted); }
+    .footnote { text-align: center; font-size: 0.85rem; color: var(--muted); margin-top: 12px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { text-align: left; font-size: 0.8rem; color: var(--muted); font-weight: 700; padding: 0 8px 6px 0; }
+    td { padding: 8px 8px 8px 0; border-top: 1px solid var(--line); vertical-align: top; }
+    td.num, th.num { text-align: right; padding-right: 0; }
+    .scroll { overflow-x: auto; }
+
+    .badge { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+    .yes { background: #e0f2e3; color: #2a7a36; }
+    .no { background: #f6e1dc; color: #9e3a24; }
+    .addr-yes { color: #2a7a36; }
+    .addr-no { color: var(--muted); }
+    .plus { color: #2a7a36; font-weight: 700; }
+    .empty, .error { text-align: center; color: var(--muted); padding: 8px 0; }
+    .error { color: #9e3a24; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Art Birthday RSVPs</h1>
+    <p class="sub" id="updated">Loading…</p>
+
+    <section class="card headline" aria-live="polite">
+      <div class="big" id="total">–</div>
+      <div class="label">people coming</div>
+      <div class="tiles">
+        <div class="tile"><div class="n" id="parents">–</div><div class="t">parents</div></div>
+        <div class="tile"><div class="n" id="children">–</div><div class="t">children</div></div>
+        <div class="tile"><div class="n" id="declined">–</div><div class="t">can't come</div></div>
+      </div>
+      <p class="footnote" id="footnote"></p>
+    </section>
+
+    <section class="card">
+      <h2>Since yesterday <span style="text-transform:none;letter-spacing:0">(last 24 hours)</span></h2>
+      <div id="since"></div>
+    </section>
+
+    <section class="card">
+      <h2>Day by day</h2>
+      <div class="scroll" id="days"></div>
+    </section>
+
+    <section class="card">
+      <h2>All RSVPs</h2>
+      <div class="scroll" id="list"></div>
+    </section>
+  </main>
+
+  <script>
+    // Web app URL from Apps Script (Deploy > Manage deployments). Empty until it's set up.
+    const FEED_URL = '';
+
+    const $ = (id) => document.getElementById(id);
+    const people = (r) => r.attending ? 1 + r.childCount : 0;
+    const dayKey = (d) => d.toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+    const dayLabel = (key) => new Date(key + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const when = (iso) => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+
+    function el(tag, text, cls) {
+      const node = document.createElement(tag);
+      if (text !== undefined) node.textContent = text;
+      if (cls) node.className = cls;
+      return node;
+    }
+
+    function setMessage(target, text, cls) {
+      target.replaceChildren(el('p', text, cls || 'empty'));
+    }
+
+    function table(headers, rows) {
+      const t = el('table');
+      const head = el('tr');
+      headers.forEach(([text, num]) => head.append(el('th', text, num ? 'num' : '')));
+      t.append(head);
+      rows.forEach(cells => {
+        const tr = el('tr');
+        cells.forEach(c => {
+          const td = el('td');
+          if (c instanceof Node) td.append(c); else td.textContent = c.text;
+          if (c.num) td.className = 'num';
+          tr.append(td);
+        });
+        t.append(tr);
+      });
+      return t;
+    }
+
+    function badge(attending) {
+      return el('span', attending ? 'Coming' : "Can't come", 'badge ' + (attending ? 'yes' : 'no'));
+    }
+
+    function render(data) {
+      const rsvps = data.rsvps
+        .map(r => ({ ...r, at: new Date(r.submitted) }))
+        .sort((a, b) => b.at - a.at);
+
+      const coming = rsvps.filter(r => r.attending);
+      const parents = coming.length;
+      const children = coming.reduce((n, r) => n + r.childCount, 0);
+
+      $('total').textContent = parents + children;
+      $('parents').textContent = parents;
+      $('children').textContent = children;
+      $('declined').textContent = rsvps.length - parents;
+      $('footnote').textContent = `${rsvps.length} ${rsvps.length === 1 ? 'family has' : 'families have'} responded`;
+      $('updated').textContent = 'Updated ' + when(data.generatedAt);
+
+      // Since yesterday
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      const recent = rsvps.filter(r => r.at.getTime() >= cutoff);
+      if (!recent.length) {
+        setMessage($('since'), 'No new RSVPs in the last 24 hours.');
+      } else {
+        const gained = recent.reduce((n, r) => n + people(r), 0);
+        const box = el('div');
+        box.append(el('p', `+${gained} ${gained === 1 ? 'person' : 'people'} coming from ${recent.length} new ${recent.length === 1 ? 'RSVP' : 'RSVPs'}`, 'plus'));
+        box.append(table([['Parent'], ['Children'], ['When'], ['']], recent.map(r => [
+          { text: r.parent }, { text: r.children.join(', ') }, { text: when(r.submitted) }, badge(r.attending)
+        ])));
+        $('since').replaceChildren(box);
+      }
+
+      // Day by day (oldest first for the running total, shown newest first)
+      const byDay = new Map();
+      [...rsvps].reverse().forEach(r => {
+        const key = dayKey(r.at);
+        const d = byDay.get(key) || { rsvps: 0, added: 0 };
+        d.rsvps += 1;
+        d.added += people(r);
+        byDay.set(key, d);
+      });
+      let running = 0;
+      const dayRows = [...byDay.entries()].map(([key, d]) => {
+        running += d.added;
+        return [{ text: dayLabel(key) }, { text: String(d.rsvps), num: true }, { text: '+' + d.added, num: true }, { text: String(running), num: true }];
+      }).reverse();
+      if (dayRows.length) {
+        $('days').replaceChildren(table([['Day'], ['New RSVPs', true], ['People added', true], ['Running total', true]], dayRows));
+      } else {
+        setMessage($('days'), 'No RSVPs yet.');
+      }
+
+      // Everyone
+      if (rsvps.length) {
+        $('list').replaceChildren(table([['Parent'], ['Children'], ['Address'], ['']], rsvps.map(r => [
+          { text: r.parent },
+          { text: r.children.join(', ') },
+          el('span', r.hasAddress ? 'Provided' : 'None', r.hasAddress ? 'addr-yes' : 'addr-no'),
+          badge(r.attending)
+        ])));
+      } else {
+        setMessage($('list'), 'No RSVPs yet.');
+      }
+    }
+
+    async function load() {
+      if (!FEED_URL) {
+        $('updated').textContent = 'Not connected yet';
+        ['since', 'days', 'list'].forEach(id => setMessage($(id), 'Waiting for the RSVP data source to be set up.'));
+        return;
+      }
+      try {
+        const res = await fetch(FEED_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        render(await res.json());
+      } catch (err) {
+        $('updated').textContent = 'Could not load RSVPs';
+        ['since', 'days', 'list'].forEach(id => setMessage($(id), 'Could not load RSVPs. Try refreshing.', 'error'));
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

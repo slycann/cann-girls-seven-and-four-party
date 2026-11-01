@@ -446,6 +446,8 @@
     const FORMSPREE_URL = 'https://formspree.io/f/meaenyrg';
     // ── Subscribe to this topic in the ntfy app to get a push on every RSVP ──
     const NTFY_TOPIC = 'cann-girls-party';
+    // Apps Script web app that appends each RSVP to a Google Sheet (see apps-script/Code.gs)
+    const SHEET_URL = '';
 
     const form = document.getElementById('rsvpForm');
     const kidsEl = document.getElementById('kids');
@@ -529,6 +531,19 @@
         });
 
         if (!res.ok) throw new Error('Formspree error');
+
+        // Copy to the Google Sheet behind the summary page. Formspree stays the primary,
+        // so a failure here never fails the RSVP. text/plain avoids a CORS preflight.
+        if (SHEET_URL) {
+          try {
+            await fetch(SHEET_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ ...data, kids })
+            });
+          } catch (_) {}
+        }
 
         // Push alert is a bonus — don't fail the RSVP if it doesn't go through.
         // Phone and address stay out of it since ntfy topics are public.
