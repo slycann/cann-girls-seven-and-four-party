@@ -51,7 +51,7 @@ function doPost(e) {
   }
 }
 
-// Public feed: abbreviated names, address yes/no, no phone, no street address, no ages.
+// Public feed: names as entered on the form, address yes/no, no phone, no street address, no ages.
 function doGet() {
   const rows = getSheet().getDataRange().getValues().slice(1).filter(r => r[0] && r[1]);
 
@@ -67,8 +67,8 @@ function doGet() {
     const kids = parseKids(r[4]);
     return {
       submitted: new Date(r[0]).toISOString(),
-      parent: abbreviate(r[1]),
-      children: kids.map(k => firstName(k.name)),
+      parent: String(r[1]).trim(),
+      children: kids.map(k => String(k.name || '').trim()),
       childCount: Number(r[5]) || kids.length,
       attending: r[6] === 'Yes',
       hasAddress: !!r[3] && r[3] !== NO_ADDRESS
@@ -80,16 +80,6 @@ function doGet() {
 
 function parseKids(cell) {
   try { return JSON.parse(cell) || []; } catch (_) { return []; }
-}
-
-function firstName(name) {
-  return String(name || '').trim().split(/\s+/)[0] || '?';
-}
-
-function abbreviate(name) {
-  const parts = String(name).trim().split(/\s+/);
-  if (parts.length < 2) return parts[0];
-  return parts[0] + ' ' + parts[parts.length - 1].charAt(0).toUpperCase() + '.';
 }
 
 function json(obj) {
